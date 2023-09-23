@@ -18,6 +18,7 @@ app.get("/", (req, res) => {
     .status(200)
     .json({ 
       "all books link": "https://library-api-v1.onrender.com/books",
+      "all books link by query": "https://library-api-v1.onrender.com/books/search/query",
       "all books link a-z": "https://library-api-v1.onrender.com/books/a-z",
       "all books link z-a": "https://library-api-v1.onrender.com/books/z-a",
       "all books link asce-price": "https://library-api-v1.onrender.com/books/asce-price",
@@ -31,6 +32,40 @@ app.get("/", (req, res) => {
 app.get("/books", async (req, res) => {
   try {
     const books = await Book.find({});
+    res.status(200).json({"count":books.length,"array":books});
+  } catch (error) {
+    console.log("error in get /books", error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+app.get("/books/search/:query", async (req, res) => {
+  try {
+    const query=req.params.query;
+    const books1 = await Book.find({
+      title: { $regex: `${query}`, $options: "i" },
+    }).limit(5);
+    const books2 = await Book.find({
+      author: { $regex: `${query}`, $options: "i" },
+    }).limit(5);
+    const books = [];
+    if(books1.length==5){
+      for(let i=0; i<books1.length; i++){
+        books.push({id: books1[i].id, author:books1[i].author, title: books1[i].title})
+      }
+    }else if(books2.length==5){
+      for(let i=0; i<books2.length; i++){
+        books.push({id: books2[i].id, author:books2[i].author, title: books2[i].title})
+      }
+    }
+    else if(books1.length<5 && books2.length<5)
+    {
+      for(let i=0; i<books1.length; i++){
+        books.push({id: books1[i].id, author:books1[i].author, title: books1[i].title})
+      }
+      for(let i=0; i<books2.length; i++){
+        books.push({id: books2[i].id, author:books2[i].author, title: books2[i].title})
+      }
+    }    
     res.status(200).json({"count":books.length,"array":books});
   } catch (error) {
     console.log("error in get /books", error.message);
