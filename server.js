@@ -18,6 +18,7 @@ app.get("/", (req, res) => {
       "all books link": "https://library-api-v1.onrender.com/books",
       "by author's name":"https://library-api-v1.onrender.com/books/author/author's-name",
       "by book's title":"https://library-api-v1.onrender.com/books/title/book's-title",
+      "by book's genre":"https://library-api-v1.onrender.com/books/genre/book's-genre",
     });
 });
 
@@ -53,6 +54,19 @@ app.get("/books/title/:title", async (req, res) => {
     console.log("params ", title);
   } catch (error) {
     console.log("error in get /books/title/:title", error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+app.get("/books/genre/:genre", async (req, res) => {
+  try {
+    const genre = req.params.genre;
+    const books = await Book.find({
+      genre: { $regex: `${genre}`, $options: "i" },
+    });
+    res.status(200).json({"count":books.length,"array":books});
+    console.log("params ", genre);
+  } catch (error) {
+    console.log("error in get /books/genre/:genre", error.message);
     res.status(500).json({ message: error.message });
   }
 });
