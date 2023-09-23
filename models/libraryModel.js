@@ -9,6 +9,11 @@ const productSchema = mongoose.Schema(
       type:String,
       required:[true,"Please enter author name."],
     },
+    synopsis:{
+      type:String,
+      required:true,
+      default:"Not Available"
+    },
     publish_date:{
       type:Date,
       required:[true,"Please enter publish date"]
