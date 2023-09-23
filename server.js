@@ -5,8 +5,10 @@ const Book = require("./models/libraryModel");
 const app = express();
 const dbUrl = process.env.DATABASE_URL;
 const apiKey = process.env.API_KEY;
+const cors=require('cors')
 
 //middleware
+app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
