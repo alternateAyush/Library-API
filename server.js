@@ -18,6 +18,10 @@ app.get("/", (req, res) => {
     .status(200)
     .json({ 
       "all books link": "https://library-api-v1.onrender.com/books",
+      "all books link a-z": "https://library-api-v1.onrender.com/books/a-z",
+      "all books link z-a": "https://library-api-v1.onrender.com/books/z-a",
+      "all books link asce-price": "https://library-api-v1.onrender.com/books/asce-price",
+      "all books link desce-price": "https://library-api-v1.onrender.com/books/desce-price",
       "by author's name":"https://library-api-v1.onrender.com/books/author/author's-name",
       "by book's title":"https://library-api-v1.onrender.com/books/title/book's-title",
       "by book's genre":"https://library-api-v1.onrender.com/books/genre/book's-genre",
@@ -27,6 +31,42 @@ app.get("/", (req, res) => {
 app.get("/books", async (req, res) => {
   try {
     const books = await Book.find({});
+    res.status(200).json({"count":books.length,"array":books});
+  } catch (error) {
+    console.log("error in get /books", error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+app.get("/books/a-z", async (req, res) => {
+  try {
+    const books = await Book.find({}).sort({ title:1});
+    res.status(200).json({"count":books.length,"array":books});
+  } catch (error) {
+    console.log("error in get /books", error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+app.get("/books/z-a", async (req, res) => {
+  try {
+    const books = await Book.find({}).sort({ title:-1});
+    res.status(200).json({"count":books.length,"array":books});
+  } catch (error) {
+    console.log("error in get /books", error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+app.get("/books/desce-price", async (req, res) => {
+  try {
+    const books = await Book.find({}).sort({ price:-1});
+    res.status(200).json({"count":books.length,"array":books});
+  } catch (error) {
+    console.log("error in get /books", error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+app.get("/books/asce-price", async (req, res) => {
+  try {
+    const books = await Book.find({}).sort({ price:1});
     res.status(200).json({"count":books.length,"array":books});
   } catch (error) {
     console.log("error in get /books", error.message);
