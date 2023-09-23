@@ -84,8 +84,11 @@ app.get("/books/publish/:date", async (req, res) => {
   }
 });
 
-app.post("/books", async (req, res) => {
+app.post("/books/:password", async (req, res) => {
   try {
+    if(apiKey!=req.params.password){
+      throw {message: "incorrect password"}
+    }
     const book = await Book.create(req.body);
     res.status(200).json(book);
   } catch (error) {
