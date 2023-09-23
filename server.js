@@ -57,7 +57,7 @@ app.get("/books/title/:title", async (req, res) => {
   }
 });
 app.get("/books/publish/:date", async (req, res) => {
-  try {
+  try {    
     const target_date=new Date(`${req.params.date}`);
     const books = await Book.find({"publish_date": {"$gt": target_date}})
     res.status(200).json({"count":books.length,"array":books});
@@ -94,8 +94,11 @@ app.post("/books", async (req, res) => {
   }
 });
 
-app.put("/books/buy/:id", async (req, res) => {
+app.put("/books/buy/:password/:id", async (req, res) => {
   try {
+    if(apiKey!=req.params.password){
+      throw {message: "incorrect password"}
+    }
     const id = req.params.id;
     const book = await Book.findByIdAndUpdate(id, req.body);
     if (!book) {
@@ -110,8 +113,11 @@ app.put("/books/buy/:id", async (req, res) => {
   }
 });
 
-app.delete("/books/:id", async (req, res) => {
+app.delete("/books/:password/:id", async (req, res) => {
   try {
+    if(apiKey!=req.params.password){
+      throw {message: "incorrect password"}
+    }
     const id = req.params.id;
     const book = await Book.findByIdAndDelete(id);
     if (!book) {
